@@ -1,7 +1,7 @@
 {
   "version": "0.1.0",
   "author": "Allen Dai",
-  "name": "Ticket Management System",
+  "name": "ticket-man",
   "private": true,
   "scripts": {
     "dev": "next dev",
