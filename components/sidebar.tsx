@@ -19,6 +19,7 @@ import NavItems from "./nav-item";
 import ProfileFooter from "../components/footer";
 import Logo from "../components/logo";
 import ThemeToggleButton from "../components/theme-toggle-button";
+import withAuth from "../components/withAuth";
 
 type SidebarProps = {
   path: any;
@@ -52,7 +53,7 @@ const SideBar = ({ path, variant, isOpen, toggle }: SidebarProps) => {
       </SimpleGrid>
 
       <Spacer />
-      <ProfileFooter />
+      {withAuth(ProfileFooter)}
     </Flex>
   ) : (
     <>
@@ -71,9 +72,7 @@ const SideBar = ({ path, variant, isOpen, toggle }: SidebarProps) => {
           </DrawerBody>
 
           <DrawerFooter>
-            <Box width="100%">
-              <ProfileFooter />
-            </Box>
+            <Box width="100%">{withAuth(ProfileFooter)}</Box>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>

@@ -1,6 +1,5 @@
 import { Box, Button, Avatar, Text, Flex, Center } from "@chakra-ui/react";
 import { useUserContext } from "../lib/firebaseHook";
-import withAuth from "../components/withAuth";
 
 const ProfileFooter = () => {
   const { user, sign_out } = useUserContext();
@@ -25,4 +24,4 @@ const ProfileFooter = () => {
   );
 };
 
-export default withAuth(ProfileFooter);
+export default ProfileFooter;
