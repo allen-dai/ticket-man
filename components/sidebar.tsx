@@ -19,7 +19,7 @@ import NavItems from "./nav-item";
 import ProfileFooter from "../components/footer";
 import Logo from "../components/logo";
 import ThemeToggleButton from "../components/theme-toggle-button";
-import withAuth from "../components/withAuth";
+import { useUserContext } from "../lib/firebaseHook";
 
 type SidebarProps = {
   path: any;
@@ -30,6 +30,7 @@ type SidebarProps = {
 
 const SideBar = ({ path, variant, isOpen, toggle }: SidebarProps) => {
   const bg = useColorModeValue("#ffffff", "#161619");
+  const { user, loading } = useUserContext();
 
   return variant === "sidebar" ? (
     <Flex
@@ -53,7 +54,7 @@ const SideBar = ({ path, variant, isOpen, toggle }: SidebarProps) => {
       </SimpleGrid>
 
       <Spacer />
-      {withAuth(ProfileFooter)}
+      {loading == false ? user ? <ProfileFooter /> : null : null}
     </Flex>
   ) : (
     <>
@@ -72,7 +73,9 @@ const SideBar = ({ path, variant, isOpen, toggle }: SidebarProps) => {
           </DrawerBody>
 
           <DrawerFooter>
-            <Box width="100%">{withAuth(ProfileFooter)}</Box>
+            <Box width="100%">
+              {loading == false ? user ? <ProfileFooter /> : null : null}
+            </Box>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
