@@ -1,6 +1,6 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../lib/firebase";
-import { useState } from "react";
+import { auth, db } from "../lib/firebase";
+import { useState, useEffect, useCallback } from "react";
 import {
   Heading,
   Container,
@@ -15,6 +15,9 @@ import {
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { debounce } from "debounce";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { useUserContext } from "../lib/firebaseHook";
 
 const Register = () => {
   const router = useRouter();
@@ -23,23 +26,45 @@ const Register = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   //For checking if username is valid/open
-  const [username, setUsername] = useState<string>();
-  const [inValid, setInValid] = useState<boolean>(false);
+  const [username, setUsername] = useState<string>("");
+  const [invalid, setInvalid] = useState<boolean>(false);
+  const [invalidUsername, setInvalidUsername] = useState<boolean>(false);
+  const {update_profile} = useUserContext();
 
-  function registerWithEmailAndPassword(
-    e: React.FormEvent<HTMLFormElement>
-  ): void {
+  function registerWithEmailAndPassword(e: React.FormEvent<HTMLFormElement>): void {
     setLoading(true);
     e.preventDefault();
-    createUserWithEmailAndPassword(auth, email as string, password as string)
-      .then(() => {
-        router.push("/");
-      })
-      .catch((err) => {
-        setLoading(false);
-        console.log(err);
-      });
+    if (username != "" && !invalidUsername) {
+      createUserWithEmailAndPassword(auth, email as string, password as string)
+        .then(async (userCred) => {
+          const uid = userCred.user.uid;
+          await setDoc(doc(db, "username", username), {
+            uid: uid
+          });
+          update_profile(username);
+          router.push("/");
+        })
+        .catch((err) => {
+          setInvalid(true);
+          setLoading(false);
+          console.log(err);
+        });
+    }
   }
+
+  useEffect(() => {
+    checkUsername(username);
+  }, [username])
+
+  const checkUsername = useCallback(
+    debounce(async (username: string) => {
+      if (username.length >= 3 && username.length <= 15) {
+        const docRef = doc(db, "username", username);
+        const docSnap = await getDoc(docRef);
+        setInvalidUsername(docSnap.exists());
+      }
+    }, 500), []);
+
   return (
     <Container>
       <Box w="80%" m="auto">
@@ -56,7 +81,7 @@ const Register = () => {
                 placeholder="Email"
                 type="email"
                 onChange={(e) => setEmail(e.currentTarget.value)}
-                isInvalid={inValid}
+                isInvalid={invalid}
               />
             </FormControl>
 
@@ -67,7 +92,7 @@ const Register = () => {
               <Input
                 placeholder="Username"
                 type="text"
-                isInvalid={inValid}
+                isInvalid={invalidUsername}
                 onChange={(e) => setUsername(e.currentTarget.value)}
               />
             </FormControl>
@@ -79,6 +104,7 @@ const Register = () => {
               <Input
                 placeholder="Password"
                 type="password"
+                isInvalid={invalid}
                 onChange={(e) => setPassword(e.currentTarget.value)}
               />
             </FormControl>
