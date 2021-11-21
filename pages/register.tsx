@@ -15,9 +15,10 @@ import {
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { debounce } from "debounce";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { useUserContext } from "../lib/firebaseHook";
+//@ts-ignore
+import { debounce } from "debounce";
 
 const Register = () => {
   const router = useRouter();

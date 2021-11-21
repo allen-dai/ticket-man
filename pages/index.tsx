@@ -18,6 +18,7 @@ const Dashboard: NextPage = () => {
   useEffect(() => {
     if (!loading && false) {
       //Getting tickets that are open and not created by the user and has a limit of 10 documents
+      //@ts-ignore
       QueryOpenTickets(10, user.uid)
         .then((docs) => setTickets(docs))
         .catch((err) => {
