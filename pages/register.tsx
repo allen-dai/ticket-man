@@ -55,6 +55,9 @@ const Register = () => {
 
   useEffect(() => {
     checkUsername(username);
+    if (username==""){
+      setInvalidUsername(false);
+    }
   }, [username])
 
   const checkUsername = useCallback(

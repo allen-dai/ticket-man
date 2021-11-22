@@ -18,7 +18,12 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 
-const TicketBox = ({ onOpen }: UseDisclosureProps) => {
+type TicketBoxProps = {
+  onOpen: UseDisclosureProps;
+  ticket: any;
+}
+
+const TicketBox = ({ onOpen, ticket }: any) => {
   const [loading, setLoading] = useState<boolean>(false);
   return (
     <Flex
@@ -33,35 +38,32 @@ const TicketBox = ({ onOpen }: UseDisclosureProps) => {
       <Flex flexDir="column">
         <Text fontSize="xs">Priority</Text>
         <Tag variant="solid" colorScheme="red">
-          High
+        {ticket?.priority}
         </Tag>
       </Flex>
 
       <Flex flexDir="column">
         <Text fontSize="xs">Description</Text>
         <Box>
-          <Tag mx={1} colorScheme="blue">
-            Technical
-          </Tag>
           <Tag mx={1} colorScheme="orange">
-            Database
+        {ticket?.description}
           </Tag>
         </Box>
       </Flex>
 
       <Flex flexDir="column">
         <Text fontSize="xs">Created by</Text>
-        <Tag>John william</Tag>
+        <Tag>{ticket?.createdBy}</Tag>
       </Flex>
 
       <Flex flexDir="column">
         <Text fontSize="xs">Created at</Text>
-        <Tag>2011-20-20</Tag>
+        <Tag>{(ticket?.iat).toDate().toString()}</Tag>
       </Flex>
 
       <Flex flexDir="column">
         <Text fontSize="xs">Open for</Text>
-        <Tag>2 days</Tag>
+        <Tag>Not created yet</Tag>
       </Flex>
 
       <Box>
