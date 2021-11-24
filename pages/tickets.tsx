@@ -1,4 +1,3 @@
-
 import WithAuth from "../components/withAuth";
 import type { NextPage } from "next";
 import { Heading, Box, SimpleGrid, useDisclosure, Flex, IconButton, Spacer, Button} from "@chakra-ui/react";
@@ -36,7 +35,7 @@ const Tickets: NextPage = () => {
   tickets?.forEach((ticket: any) => {
     openTickets.push(
       <Box key={ticket.id}>
-        <TicketBox onOpen={onOpen} ticket={ticket.data()} />
+        <TicketBox onOpen={onOpen} ticket={ticket.data()} action="Delete"/>
       </Box>
     );
   });
@@ -66,20 +65,3 @@ const Tickets: NextPage = () => {
 };
 
 export default WithAuth(Tickets);
-
-
-
-
-    //
-    // <Box mt={100} ml={20}>
-    //   <Link href="/createticket">
-    //     <Button colorScheme="teal" rightIcon={<AddIcon />}>Create</Button>
-    //   </Link>
-    //
-    //   <Box>
-    //     <Heading>Pending tickets</Heading>
-    //     {tickets}
-    //     <TicketModal onClose={onClose} isOpen={isOpen} />
-    //
-    //   </Box>
-    // </Box>

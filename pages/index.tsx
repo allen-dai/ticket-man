@@ -38,7 +38,7 @@ const Dashboard: NextPage = () => {
   tickets?.forEach((ticket: any) => {
     openTickets.push(
       <Box key={ticket.id}>
-        <TicketBox onOpen={onOpen} ticket={ticket.data()} />
+        <TicketBox onOpen={onOpen} ticket={ticket.data()} action="Take" />
       </Box>
     );
   });

@@ -18,13 +18,36 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 
-type TicketBoxProps = {
-  onOpen: UseDisclosureProps;
-  ticket: any;
-}
-
-const TicketBox = ({ onOpen, ticket }: any) => {
+const TicketBox = ({ onOpen, ticket, action }: any) => {
   const [loading, setLoading] = useState<boolean>(false);
+  const priorityColor = {
+    "high": "red",
+    "medium": "orange",
+    "low": "blue"
+  }
+  const actionType = {
+    "Take": "teal",
+    "Delete": "red"
+  }
+
+  let createDate = ticket?.iat.toDate().toString().split(" ")
+  createDate = createDate.slice(0, 5).toString().replaceAll(",", " ")
+
+  let timeDiff = (new Date()).getTime() - ticket?.iat.toDate().getTime()
+
+  function msToTime(duration:number) {
+    let seconds:number|string = Math.floor((duration / 1000) % 60)
+    let minutes:number|string  = Math.floor((duration / (1000 * 60)) % 60)
+    let hours:number|string  = Math.floor((duration / (1000 * 60 * 60)) % 24)
+
+    hours = (hours < 10) ? "0" + hours : hours;
+    minutes = (minutes < 10) ? "0" + minutes : minutes;
+    seconds = (seconds < 10) ? "0" + seconds : seconds;
+
+    return hours + "h : " + minutes + "m : " + seconds + "s";
+  }
+
+
   return (
     <Flex
       justifyContent="space-between"
@@ -37,8 +60,10 @@ const TicketBox = ({ onOpen, ticket }: any) => {
     >
       <Flex flexDir="column">
         <Text fontSize="xs">Priority</Text>
-        <Tag variant="solid" colorScheme="red">
-        {ticket?.priority}
+        <Tag variant="solid" colorScheme={
+          //@ts-ignore
+          ticket ? priorityColor[ticket.priority] : ""}>
+          {ticket?.priority}
         </Tag>
       </Flex>
 
@@ -46,7 +71,7 @@ const TicketBox = ({ onOpen, ticket }: any) => {
         <Text fontSize="xs">Description</Text>
         <Box>
           <Tag mx={1} colorScheme="orange">
-        {ticket?.description}
+            {ticket?.description}
           </Tag>
         </Box>
       </Flex>
@@ -58,12 +83,12 @@ const TicketBox = ({ onOpen, ticket }: any) => {
 
       <Flex flexDir="column">
         <Text fontSize="xs">Created at</Text>
-        <Tag>{(ticket?.iat).toDate().toString()}</Tag>
+        <Tag>{createDate}</Tag>
       </Flex>
 
       <Flex flexDir="column">
         <Text fontSize="xs">Open for</Text>
-        <Tag>Not created yet</Tag>
+        <Tag>{msToTime(timeDiff)}</Tag>
       </Flex>
 
       <Box>
@@ -78,8 +103,10 @@ const TicketBox = ({ onOpen, ticket }: any) => {
         >
           View
         </Button>
-        <Button isLoading={loading} ml={2} colorScheme="teal">
-          Take
+        <Button isLoading={loading} ml={2} colorScheme={
+          //@ts-ignore
+          actionType[action]}>
+          {action}
         </Button>
       </Box>
     </Flex>
