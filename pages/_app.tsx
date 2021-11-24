@@ -5,13 +5,13 @@ import theme from "../lib/theme";
 import { useUserData, UserContext } from "../lib/firebaseHook";
 
 const App = ({ Component, pageProps, router }: AppProps) => (
-  <ChakraProvider theme={theme}>
-    <UserContext.Provider value={useUserData()}>
-      <Main router={router}>
-        <Component {...pageProps} />
-      </Main>
-    </UserContext.Provider>
-  </ChakraProvider>
+    <ChakraProvider theme={theme}>
+        <UserContext.Provider value={useUserData()}>
+            <Main router={router}>
+                <Component {...pageProps} />
+            </Main>
+        </UserContext.Provider>
+    </ChakraProvider>
 );
 
 export default App;

@@ -38,3 +38,4 @@ yarn-error.log*
 
 .prettierignore
 package-lock.json
+prettier.config.js
