@@ -43,6 +43,9 @@ const NavItems = ({ toggle, path }: NavProps) => {
             <LinkItem path={path} href="/tickets" onClick={toggle}>
                 Tickets
             </LinkItem>
+            <LinkItem path={path} href="/createticket" onClick={toggle}>
+                Create Ticket
+            </LinkItem>
         </>
     ) : (
         <>

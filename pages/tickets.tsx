@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { RepeatIcon, AddIcon } from "@chakra-ui/icons";
 import { QueryUserTickets } from "../query/ticket";
-import { TicketBox, TicketModal } from "../components/ticket";
+import { TicketBox } from "../components/ticket";
 import { useState, useEffect } from "react";
 import { useUserContext } from "../lib/firebaseHook";
 import Link from "next/link";
@@ -20,7 +20,6 @@ import Link from "next/link";
 const Tickets: NextPage = () => {
     const { user, loading } = useUserContext();
     const [tickets, setTickets] = useState<any>();
-    const { isOpen, onOpen, onClose } = useDisclosure();
     //This make sure it only query when firebase is done loading/auth*ing the user.
     useEffect(() => {
         if (!loading && user) {
@@ -45,9 +44,9 @@ const Tickets: NextPage = () => {
         openTickets.push(
             <Box key={ticket.id}>
                 <TicketBox
-                    onOpen={onOpen}
                     ticket={ticket.data()}
-                    action="Delete"
+                    type="Delete"
+                    id={ticket.id}
                 />
             </Box>
         );
@@ -73,7 +72,6 @@ const Tickets: NextPage = () => {
                     />
                 </Flex>
                 {openTickets}
-                <TicketModal onClose={onClose} isOpen={isOpen} />
             </SimpleGrid>
         </Box>
     );

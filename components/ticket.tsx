@@ -14,26 +14,47 @@ import {
     FormLabel,
     Tag,
     Text,
+    useDisclosure,
     UseDisclosureProps,
+    AlertDialog,
+    AlertDialogOverlay,
+    AlertDialogContent,
+    AlertDialogHeader,
+    AlertDialogBody,
+    AlertDialogFooter,
+    IconButton,
+    useToast,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { CheckIcon } from "@chakra-ui/icons"
+import { useState, useRef } from "react";
+import { doc, updateDoc, deleteDoc } from "firebase/firestore";
+import { db } from "../lib/firebase";
+import { useUserContext } from "../lib/firebaseHook";
 
-const TicketBox = ({ onOpen, ticket, action }: any) => {
+const TicketBox = ({ id, ticket, type }: any) => {
+    const { isOpen, onOpen, onClose } = useDisclosure();
     const [loading, setLoading] = useState<boolean>(false);
+    const [alert, setAlert] = useState<boolean>(false);
+    const alertOnClose = () => setAlert(false);
+    const alertCancelRef = useRef();
+    const { user } = useUserContext();
+    const [querySucc, setQuerySucc] = useState<boolean>(false);
+    const toast = useToast();
+
     const priorityColor = {
         high: "red",
         medium: "orange",
         low: "blue",
     };
-    const actionType = {
+    const typeColor = {
         Take: "teal",
         Delete: "red",
     };
 
-    let createDate = ticket?.iat.toDate().toString().split(" ");
+    let createDate = ticket.iat.toDate().toString().split(" ");
     createDate = createDate.slice(0, 5).toString().replaceAll(",", " ");
 
-    let timeDiff = new Date().getTime() - ticket?.iat.toDate().getTime();
+    let timeDiff = new Date().getTime() - ticket.iat.toDate().getTime();
 
     function msToTime(duration: number) {
         let seconds: number | string = Math.floor((duration / 1000) % 60);
@@ -49,6 +70,55 @@ const TicketBox = ({ onOpen, ticket, action }: any) => {
         seconds = seconds < 10 ? "0" + seconds : seconds;
 
         return hours + "h : " + minutes + "m : " + seconds + "s";
+    }
+
+    function Query() {
+        if (type === "Take") {
+            return updateDoc(doc(db, "ticket", id), {
+                takenBy: user.uid,
+                status: "In Progess"
+            });
+        }
+        else {
+            return deleteDoc(doc(db, "ticket", id));
+        }
+    }
+
+    function showToast(status:boolean){
+        let toastContent = {};
+        if (status){
+            toastContent = {
+                title: type==="Take" ? "Ticket assigned" : "Ticket deleted",
+                description: type==="Take" ? "We've assigned the ticket to you" : "Ticket successfully deleted",
+                status: "success",
+                duration: 4000,
+                isClosable: true,
+            };
+        }
+        else{
+            toastContent = {
+                title: "Request failed",
+                status: "error",
+                duration: 4000,
+                isClosable: true,
+            };
+        }
+        toast(toastContent);
+    }
+
+    function startQuery() {
+        setLoading(true);
+        Query()
+            .then(() => {
+                setLoading(false);
+                setQuerySucc(true);
+                showToast(true);
+            })
+            .catch((err: any) => {
+                console.log(err);
+                setLoading(false);
+                showToast(false);
+            });
     }
 
     return (
@@ -70,7 +140,7 @@ const TicketBox = ({ onOpen, ticket, action }: any) => {
                         ticket ? priorityColor[ticket.priority] : ""
                     }
                 >
-                    {ticket?.priority}
+                    {ticket.priority}
                 </Tag>
             </Flex>
 
@@ -78,14 +148,14 @@ const TicketBox = ({ onOpen, ticket, action }: any) => {
                 <Text fontSize="xs">Description</Text>
                 <Box>
                     <Tag mx={1} colorScheme="orange">
-                        {ticket?.description}
+                        {ticket.description}
                     </Tag>
                 </Box>
             </Flex>
 
             <Flex flexDir="column">
                 <Text fontSize="xs">Created by</Text>
-                <Tag>{ticket?.createdBy}</Tag>
+                <Tag>{ticket.createdBy}</Tag>
             </Flex>
 
             <Flex flexDir="column">
@@ -101,7 +171,6 @@ const TicketBox = ({ onOpen, ticket, action }: any) => {
             <Box>
                 <Button
                     onClick={() => {
-                        setLoading(!loading);
                         if (onOpen) {
                             onOpen();
                         }
@@ -110,37 +179,39 @@ const TicketBox = ({ onOpen, ticket, action }: any) => {
                 >
                     View
                 </Button>
-                <Button
-                    isLoading={loading}
-                    ml={2}
-                    colorScheme={
-                        //@ts-ignore
-                        actionType[action]
-                    }
-                >
-                    {action}
-                </Button>
+                {(!querySucc) ?
+                    <Button
+                        isLoading={loading}
+                        ml={2}
+                        colorScheme={
+                            //@ts-ignore
+                            typeColor[type]
+                        }
+                        onClick={() => { setAlert(true) }}
+                    >
+                        {type}
+                    </Button>
+                    :
+                    <IconButton aria-label="success" icon={<CheckIcon />} colorScheme="green" mx={2} />
+                }
             </Box>
+            <TicketModal isOpen={isOpen} onClose={onClose} content={ticket.description} />
+            <Alert isOpen={alert} onClose={alertOnClose} cancelRef={alertCancelRef} type={type} query={startQuery} />
         </Flex>
     );
 };
 
-const TicketModal = ({ isOpen, onClose }: UseDisclosureProps) => {
+const TicketModal = ({ isOpen, onClose, content }: any) => {
     return (
         <Modal
             isCentered
-            isOpen={isOpen as boolean}
-            onClose={() => {
-                if (onClose) {
-                    onClose();
-                }
-            }}
-        >
-            <ModalOverlay backgroundColor="blackAlpha.200" />
+            isOpen={isOpen}
+            onClose={onClose}>
+            <ModalOverlay />
             <ModalContent boxShadow="lg">
-                <ModalHeader>Create your account</ModalHeader>
+                <ModalHeader>Quick view</ModalHeader>
                 <ModalCloseButton />
-                <ModalBody pb={6}>Body</ModalBody>
+                <ModalBody pb={6}>{content}</ModalBody>
 
                 <ModalFooter>
                     <Button colorScheme="blue" mr={3}>
@@ -153,4 +224,36 @@ const TicketModal = ({ isOpen, onClose }: UseDisclosureProps) => {
     );
 };
 
-export { TicketBox, TicketModal };
+const Alert = ({ onClose, isOpen, cancelRef, type, query }: any) => {
+    return (
+        <AlertDialog
+            isOpen={isOpen}
+            leastDestructiveRef={cancelRef}
+            onClose={onClose}
+            isCentered
+        >
+            <AlertDialogOverlay>
+                <AlertDialogContent>
+                    <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                        {type}
+                    </AlertDialogHeader>
+
+                    <AlertDialogBody>
+                        Are you sure? You can not undo this action afterwards.
+                    </AlertDialogBody>
+
+                    <AlertDialogFooter>
+                        <Button ref={cancelRef} onClick={onClose}>
+                            Cancel
+                        </Button>
+                        <Button colorScheme={type === "Take" ? "teal" : "red"} onClick={() => { query(); onClose() }} ml={3}>
+                            {type}
+                        </Button>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialogOverlay>
+        </AlertDialog>
+    )
+}
+
+export { TicketBox };

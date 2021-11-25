@@ -12,7 +12,7 @@ import {
 import { RepeatIcon } from "@chakra-ui/icons";
 
 import { QueryOpenTickets } from "../query/ticket";
-import { TicketBox, TicketModal } from "../components/ticket";
+import { TicketBox } from "../components/ticket";
 
 import { useState, useEffect } from "react";
 import { useUserContext } from "../lib/firebaseHook";
@@ -49,7 +49,8 @@ const Dashboard: NextPage = () => {
                 <TicketBox
                     onOpen={onOpen}
                     ticket={ticket.data()}
-                    action="Take"
+                    id={ticket.id}
+                    type="Take"
                 />
             </Box>
         );
@@ -95,7 +96,6 @@ const Dashboard: NextPage = () => {
                 </Flex>
                 {openTickets}
 
-                <TicketModal onClose={onClose} isOpen={isOpen} />
             </SimpleGrid>
         </Box>
     );
