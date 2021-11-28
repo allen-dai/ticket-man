@@ -54,6 +54,17 @@ const QueryUserTickets = async (LIMIT: number, uid: string) => {
     return querySnapshot;
 };
 
+const QueryInProgressTicket = async (LIMIT: number, uid: string) => {
+    const q = query(
+        collection(db, "ticket"),
+        where("takenBy", "==", uid),
+        where("status", "==", "In Progress"),
+        limit(LIMIT < 100 ? LIMIT : 20)
+    );
+    const querySnapshot = await getDocs(q);
+    return querySnapshot;
+};
+
 const CreateTicket = async (info: ticketParams) => {
     const ticket: ticketProps = {
         ...info,
@@ -66,8 +77,4 @@ const CreateTicket = async (info: ticketParams) => {
     await addDoc(collection(db, "ticket"), ticket);
 };
 
-const DeleteTicket = async (ticketId: any) => {
-    await deleteDoc(doc(db, "ticket", ticketId));
-};
-
-export { QueryOpenTickets, QueryUserTickets, CreateTicket };
+export { QueryOpenTickets, QueryUserTickets, QueryInProgressTicket, CreateTicket };

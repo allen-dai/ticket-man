@@ -30,6 +30,7 @@ import { useState, useRef } from "react";
 import { doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { db } from "../lib/firebase";
 import { useUserContext } from "../lib/firebaseHook";
+import Link from "next/link"
 
 const TicketBox = ({ id, ticket, type }: any) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -49,6 +50,7 @@ const TicketBox = ({ id, ticket, type }: any) => {
     const typeColor = {
         Take: "teal",
         Delete: "red",
+        Edit: "teal",
     };
 
     let createDate = ticket.iat.toDate().toString().split(" ");
@@ -76,7 +78,7 @@ const TicketBox = ({ id, ticket, type }: any) => {
         if (type === "Take") {
             return updateDoc(doc(db, "ticket", id), {
                 takenBy: user.uid,
-                status: "In Progess"
+                status: "In Progress"
             });
         }
         else {
@@ -84,18 +86,18 @@ const TicketBox = ({ id, ticket, type }: any) => {
         }
     }
 
-    function showToast(status:boolean){
+    function showToast(status: boolean) {
         let toastContent = {};
-        if (status){
+        if (status) {
             toastContent = {
-                title: type==="Take" ? "Ticket assigned" : "Ticket deleted",
-                description: type==="Take" ? "We've assigned the ticket to you" : "Ticket successfully deleted",
+                title: type === "Take" ? "Ticket assigned" : "Ticket deleted",
+                description: type === "Take" ? "We've assigned the ticket to you" : "Ticket successfully deleted",
                 status: "success",
                 duration: 4000,
                 isClosable: true,
             };
         }
-        else{
+        else {
             toastContent = {
                 title: "Request failed",
                 status: "error",
@@ -179,18 +181,30 @@ const TicketBox = ({ id, ticket, type }: any) => {
                 >
                     View
                 </Button>
-                {(!querySucc) ?
-                    <Button
-                        isLoading={loading}
-                        ml={2}
-                        colorScheme={
-                            //@ts-ignore
-                            typeColor[type]
-                        }
-                        onClick={() => { setAlert(true) }}
-                    >
-                        {type}
-                    </Button>
+                {!querySucc
+                    ?
+                    (
+                        type === "Edit"
+                            ?
+                            <Link href={"/edit/" + id}>
+                                <Button ml={2} colorScheme="teal">
+                                    Edit
+                                </Button>
+                            </Link>
+                            :
+
+                            <Button
+                                isLoading={loading}
+                                ml={2}
+                                colorScheme={
+                                    //@ts-ignore
+                                    typeColor[type]
+                                }
+                                onClick={() => { setAlert(true) }}
+                            >
+                                {type}
+                            </Button>
+                    )
                     :
                     <IconButton aria-label="success" icon={<CheckIcon />} colorScheme="green" mx={2} />
                 }
@@ -225,6 +239,11 @@ const TicketModal = ({ isOpen, onClose, content }: any) => {
 };
 
 const Alert = ({ onClose, isOpen, cancelRef, type, query }: any) => {
+    const typeColor = {
+        Take: "teal",
+        Delete: "red",
+        Edit: "teal",
+    };
     return (
         <AlertDialog
             isOpen={isOpen}
@@ -246,7 +265,10 @@ const Alert = ({ onClose, isOpen, cancelRef, type, query }: any) => {
                         <Button ref={cancelRef} onClick={onClose}>
                             Cancel
                         </Button>
-                        <Button colorScheme={type === "Take" ? "teal" : "red"} onClick={() => { query(); onClose() }} ml={3}>
+                        <Button colorScheme={
+                            //@ts-ignore
+                            typeColor[type]
+                        } onClick={() => { query(); onClose() }} ml={3}>
                             {type}
                         </Button>
                     </AlertDialogFooter>

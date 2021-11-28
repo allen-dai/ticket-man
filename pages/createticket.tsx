@@ -11,6 +11,7 @@ import {
     HStack,
     RadioGroup,
     FormHelperText,
+    useToast,
 } from "@chakra-ui/react";
 
 import { AddIcon } from "@chakra-ui/icons";
@@ -20,30 +21,29 @@ import { useUserContext } from "../lib/firebaseHook";
 import { useRouter } from "next/router";
 
 const Createticket = () => {
-    // iss: string;
-    // iat: string;
-    // description: string;
-    // priority: string;
-    // typ: string;
-    // takenBy?: string;
-    // status: string;
-    // record_num: string;
-    // title: string;
     const { user } = useUserContext();
-    const [descriptoin, setDescription] = useState<string>("");
+    const [description, setDescription] = useState<string>("");
     const [title, setTitle] = useState<string>("");
     const [priority, setPriority] = useState<string>();
     const router = useRouter();
+    const toast = useToast();
+
     const onSubmit = (e: any) => {
         e.preventDefault();
         CreateTicket({
-            description: descriptoin,
+            description: description,
             title: title,
             //@ts-ignore
             priority: priority,
             createdBy: user.displayName,
             iss: user.uid,
         }).then(() => {
+            toast({
+                title: "Ticket successfully created",
+                status: "success",
+                duration: 4000,
+                isClosable: true,
+            })
             router.push("/tickets");
         });
     };
@@ -55,7 +55,7 @@ const Createticket = () => {
                 <SimpleGrid gap={4} mt={4}>
                     <FormControl>
                         <FormHelperText> Select priority</FormHelperText>
-                        <RadioGroup onChange={(value) => setPriority(value)}>
+                        <RadioGroup onChange={(value) => setPriority(value)} defaultValue="low">
                             <HStack spacing="24px">
                                 <Radio value="low">Low</Radio>
                                 <Radio value="medium">Medium</Radio>
