@@ -95,6 +95,7 @@ const Dashboard: NextPage = () => {
                     />
                 </Flex>
                 {openTickets}
+                {openTickets.length<1 ? "Empty" : null}
 
             </SimpleGrid>
         </Box>
