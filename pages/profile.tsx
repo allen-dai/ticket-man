@@ -15,7 +15,6 @@ import {
     Divider,
     Input,
     useToast,
-    useColorModeValue,
 } from "@chakra-ui/react"
 import { useState, useEffect } from "react";
 
@@ -24,10 +23,12 @@ const Profile = () => {
     const [displayName, setDisplayName] = useState<string>(user.displayName);
     const [email, setEmail] = useState<string>(user.email);
     const [disableSubmit, setDisableSumbit] = useState<boolean>(true);
+    const [loading, setLoading] = useState<boolean>(false);
     const toast = useToast();
 
     function onSubmit(e: any) {
         e.preventDefault();
+        setLoading(true);
         //@ts-ignore
         updateProfile(auth.currentUser, { displayName: displayName })
             .then(() => {
@@ -38,7 +39,13 @@ const Profile = () => {
                     isClosable: true,
                 })
                 update_user();
+                setLoading(false);
             })
+            .catch( (err)=>{
+                console.log(err);
+                setLoading(false);
+
+            });
     }
 
     useEffect(() => {
@@ -81,7 +88,7 @@ const Profile = () => {
 
                     <Flex mt={5}>
                         <Spacer />
-                        <Button type="submit" size="sm" colorScheme="blue" disabled={disableSubmit}>
+                        <Button type="submit" size="sm" colorScheme="blue" disabled={disableSubmit} isLoading={loading}>
                             Save
                         </Button>
                     </Flex>
