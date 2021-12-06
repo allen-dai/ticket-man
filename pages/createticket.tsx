@@ -24,7 +24,7 @@ const Createticket = () => {
     const { user } = useUserContext();
     const [description, setDescription] = useState<string>("");
     const [title, setTitle] = useState<string>("");
-    const [priority, setPriority] = useState<string>();
+    const [priority, setPriority] = useState<string>("low");
     const router = useRouter();
     const toast = useToast();
 
@@ -33,7 +33,6 @@ const Createticket = () => {
         CreateTicket({
             description: description,
             title: title,
-            //@ts-ignore
             priority: priority,
             createdBy: user.displayName,
             iss: user.uid,
