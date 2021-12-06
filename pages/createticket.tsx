@@ -67,12 +67,14 @@ const Createticket = () => {
                         placeholder="title"
                         name="title"
                         onChange={(e) => setTitle(e.currentTarget.value)}
+                        borderColor="gray.400"
                     />
                     <Textarea
                         height="200px"
                         placeholder="Description"
                         isRequired
                         resize="none"
+                        borderColor="gray.400"
                         onChange={(e) => setDescription(e.currentTarget.value)}
                     />
                     <Button

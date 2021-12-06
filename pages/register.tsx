@@ -97,6 +97,7 @@ const Register = () => {
                             <Input
                                 placeholder="Email"
                                 type="email"
+                                borderColor="gray.400"
                                 onChange={(e) =>
                                     setEmail(e.currentTarget.value)
                                 }
@@ -111,6 +112,7 @@ const Register = () => {
                             <Input
                                 placeholder="Username"
                                 type="text"
+                                borderColor="gray.400"
                                 isInvalid={invalidUsername}
                                 onChange={(e) =>
                                     setUsername(e.currentTarget.value)
@@ -125,6 +127,7 @@ const Register = () => {
                             <Input
                                 placeholder="Password"
                                 type="password"
+                                borderColor="gray.400"
                                 isInvalid={invalid}
                                 onChange={(e) =>
                                     setPassword(e.currentTarget.value)

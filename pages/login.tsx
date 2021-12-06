@@ -66,6 +66,7 @@ const Login = () => {
                                 type="email"
                                 placeholder="Email"
                                 isInvalid={inValid}
+                                borderColor="gray.400"
                                 onChange={(e) =>
                                     setEmail(e.currentTarget.value)
                                 }
@@ -80,6 +81,7 @@ const Login = () => {
                                 type="password"
                                 placeholder="Password"
                                 isInvalid={inValid}
+                                borderColor="gray.400"
                                 onChange={(e) =>
                                     setPassword(e.currentTarget.value)
                                 }
