@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth, db } from "../lib/firebase";
 import { useState, useEffect, useCallback } from "react";
 import {
@@ -30,7 +30,8 @@ const Register = () => {
     const [username, setUsername] = useState<string>("");
     const [invalid, setInvalid] = useState<boolean>(false);
     const [invalidUsername, setInvalidUsername] = useState<boolean>(false);
-    const { update_profile } = useUserContext();
+
+    const { update_user } = useUserContext();
 
     function registerWithEmailAndPassword(
         e: React.FormEvent<HTMLFormElement>
@@ -48,8 +49,12 @@ const Register = () => {
                     await setDoc(doc(db, "username", username), {
                         uid: uid,
                     });
-                    update_profile(username);
-                    router.push("/");
+                    //@ts-ignore auth.currentUser will not be null at this step
+                    updateProfile(auth.currentUser, { displayName: username })
+                        .then(() => {
+                            update_user();
+                            router.push("/");
+                        })
                 })
                 .catch((err) => {
                     setInvalid(true);

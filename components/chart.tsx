@@ -17,7 +17,7 @@ type LineChartDataProps = {
     };
 };
 
-const LineChart = () => {
+const LineChart = ({type}:any) => {
     const data = {
         labels: [
             1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
@@ -47,6 +47,7 @@ const LineChart = () => {
                 pointRadius: 0,
             },
         },
+
         scales: {
             x: {
                 grid: { color: "" },
@@ -60,7 +61,7 @@ const LineChart = () => {
         <Box bg="#181c3c" p={5} borderRadius={15}>
             <Flex>
                 <Heading mb={5} color="whiteAlpha.900" size="md">
-                    Closed
+                    {type}
                 </Heading>
 
                 <Spacer />

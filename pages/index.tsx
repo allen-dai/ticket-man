@@ -65,13 +65,13 @@ const Dashboard: NextPage = () => {
                 p={2}
             >
                 <Box>
-                    <LineChart />
+                    <LineChart type="Open"/>
                 </Box>
                 <Box>
-                    <LineChart />
+                    <LineChart type="In Progress"/>
                 </Box>
                 <Box>
-                    <LineChart />
+                    <LineChart type="Closed"/>
                 </Box>
             </SimpleGrid>
 

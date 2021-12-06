@@ -76,7 +76,7 @@ const SideBar = ({ path, variant, isOpen, toggle }: SidebarProps) => {
                         <Box width="100%">
                             {loading == false ? (
                                 user ? (
-                                    <ProfileFooter />
+                                    <ProfileFooter toggle={toggle}/>
                                 ) : null
                             ) : null}
                         </Box>

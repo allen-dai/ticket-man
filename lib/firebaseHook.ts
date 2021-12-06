@@ -1,5 +1,5 @@
 import { auth } from "./firebase";
-import { onAuthStateChanged, signOut, updateProfile } from "firebase/auth";
+import { onAuthStateChanged, signOut} from "firebase/auth";
 import { useState, useEffect, createContext, useContext } from "react";
 
 type userProps = {
@@ -8,6 +8,7 @@ type userProps = {
     photoURL?: string;
     displayName?: string;
 };
+
 
 type valueProps = {
     loading: boolean;
@@ -53,24 +54,11 @@ export function useUserData() {
         signOut(auth);
     }
 
-    function update_profile(username: string) {
-        //@ts-ignore
-        updateProfile(auth.currentUser, {
-            displayName: username,
-        })
-            .then(() => {
-                update_user();
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    }
-
     const value = {
         loading,
         user,
         sign_out,
-        update_profile,
+        update_user,
     };
 
     return value;

@@ -7,12 +7,21 @@ const styles = {
             bg: mode("#f0e7db", "#202023")(props),
         },
     }),
+
 };
+
+const components = {
+    Divider: {
+        baseStyle:{
+            borderColor: mode("gray.700", "whiteAlpha.700")
+        }
+    }
+}
 
 const config = {
     initialColorMode: "dark",
     useSystemColorMode: true,
 };
 
-const theme = extendTheme({ config, styles });
+const theme = extendTheme({ config, styles, components });
 export default theme;

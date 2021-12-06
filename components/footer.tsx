@@ -1,7 +1,8 @@
 import { Box, Button, Avatar, Text, Flex, Center } from "@chakra-ui/react";
 import { useUserContext } from "../lib/firebaseHook";
+import Link from "next/link";
 
-const ProfileFooter = () => {
+const ProfileFooter = ({toggle}:any) => {
     const { user, sign_out } = useUserContext();
     return (
         <Box display={user ? "flex" : "none"} flexDir="column">
@@ -13,7 +14,18 @@ const ProfileFooter = () => {
                     </Text>
                 </Center>
             </Flex>
+
+            <Link href="/profile">
+                <Button
+                    mb={2}
+                    onClick={toggle}
+                >
+                    Profile
+                </Button>
+            </Link>
+
             <Button
+                colorScheme="blue"
                 onClick={() => {
                     sign_out
                         ? sign_out()
