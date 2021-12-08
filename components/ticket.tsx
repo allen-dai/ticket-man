@@ -181,32 +181,36 @@ const TicketBox = ({ id, ticket, type }: any) => {
                 >
                     View
                 </Button>
-                {!querySucc
+                {type === "History"
                     ?
-                    (
-                        type === "Edit"
-                            ?
-                            <Link href={"/edit/" + id}>
-                                <Button ml={2} colorScheme="teal">
-                                    Edit
-                                </Button>
-                            </Link>
-                            :
-
-                            <Button
-                                isLoading={loading}
-                                ml={2}
-                                colorScheme={
-                                    //@ts-ignore
-                                    typeColor[type]
-                                }
-                                onClick={() => { setAlert(true) }}
-                            >
-                                {type}
-                            </Button>
-                    )
+                    null
                     :
-                    <IconButton aria-label="success" icon={<CheckIcon />} colorScheme="green" mx={2} />
+                    !querySucc
+                        ?
+                        (
+                            type === "Edit"
+                                ?
+                                <Link href={"/edit/" + id}>
+                                    <Button ml={2} colorScheme="teal">
+                                        Edit
+                                    </Button>
+                                </Link>
+                                :
+
+                                <Button
+                                    isLoading={loading}
+                                    ml={2}
+                                    colorScheme={
+                                        //@ts-ignore
+                                        typeColor[type]
+                                    }
+                                    onClick={() => { setAlert(true) }}
+                                >
+                                    {type}
+                                </Button>
+                        )
+                        :
+                        <IconButton aria-label="success" icon={<CheckIcon />} colorScheme="green" mx={2} />
                 }
             </Box>
             <TicketModal isOpen={isOpen} onClose={onClose} content={ticket.description} />
@@ -242,6 +246,7 @@ const Alert = ({ onClose, isOpen, cancelRef, type, query }: any) => {
     const typeColor = {
         Take: "teal",
         Delete: "red",
+        Close: "red",
         Edit: "teal",
     };
     return (
@@ -278,4 +283,4 @@ const Alert = ({ onClose, isOpen, cancelRef, type, query }: any) => {
     )
 }
 
-export { TicketBox };
+export { TicketBox, Alert };

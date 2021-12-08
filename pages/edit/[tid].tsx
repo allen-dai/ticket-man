@@ -1,7 +1,7 @@
 import { useRouter } from "next/router"
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc, increment, addDoc, collection } from "firebase/firestore";
 import { db } from "../../lib/firebase";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import WithAuth from "../../components/withAuth";
 import {
     Heading,
@@ -13,8 +13,12 @@ import {
     useToast,
     FormControl,
     FormHelperText,
+    Flex,
+    Spacer,
+    useDisclosure,
 } from "@chakra-ui/react";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
+import { Alert } from "../../components/ticket";
 
 const Edit = () => {
     const router = useRouter();
@@ -22,6 +26,10 @@ const Edit = () => {
     const [ticket, setTicket] = useState<any>();
     const toast = useToast();
     const [description, setDescription] = useState<string>();
+
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const cancelRef = useRef();
+
 
     let fetched = false;
     useEffect(() => {
@@ -51,11 +59,8 @@ const Edit = () => {
         }
     }, [tid])
 
-    function onSubmit(e: any) {
-        e.preventDefault();
-        updateDoc(doc(db, "ticket", String(tid)), {
-            description: description
-        })
+    function update_doc(content: any) {
+        updateDoc(doc(db, "ticket", String(tid)), content)
             .then(() => {
                 toast({
                     title: "Ticket updated",
@@ -63,16 +68,31 @@ const Edit = () => {
                     duration: 4000,
                     isClosable: true,
                 })
+                //@ts-ignore push old data to its subcollection
+                addDoc(collection(db, "ticket", String(tid), "history"),
+                    ticket
+                );
+
+
+                //@ts-ignore update version 
+                updateDoc(doc(db, "ticket", tid), {
+                    version: increment(1)
+                });
+
                 router.push("/tickets");
             })
             .catch((err) => {
-                toast({
-                    title: err,
-                    status: "success",
-                    duration: 4000,
-                    isClosable: true,
-                })
+                console.log(err);
             });
+    }
+
+    function onSubmit(e: any) {
+        e.preventDefault();
+        update_doc({ description: description });
+    }
+
+    function closeTicket() {
+        update_doc({ description: description, status: "Closed" });
     }
 
     return (
@@ -100,6 +120,18 @@ const Edit = () => {
                     </Button>
                 </SimpleGrid>
             </form>
+
+            <Flex mt={5}>
+                <Spacer />
+                <Button
+                    colorScheme="red"
+                    onClick={onOpen}
+                >
+                    CLOSE
+                </Button>
+                <Alert isOpen={isOpen} onClose={onClose} cancelRef={cancelRef} type="Close" query={closeTicket} />
+            </Flex>
+
         </Container>
     )
 }

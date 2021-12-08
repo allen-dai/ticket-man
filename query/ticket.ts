@@ -2,6 +2,7 @@ import { db } from "../lib/firebase";
 import {
     addDoc,
     collection,
+    collectionGroup,
     getDocs,
     query,
     where,
@@ -22,6 +23,7 @@ type ticketProps = {
     status: string;
     record_num: string;
     title: string;
+    version: number;
 };
 
 type ticketParams = {
@@ -65,6 +67,14 @@ const QueryInProgressTicket = async (LIMIT: number, uid: string) => {
     return querySnapshot;
 };
 
+const QueryTicketHistory = async (tid: string) => {
+    const q = query(
+        collection(db, "ticket", tid, "history"),
+    );
+    const querySnapshot = await getDocs(q);
+    return querySnapshot;
+}
+
 const CreateTicket = async (info: ticketParams) => {
     const ticket: ticketProps = {
         ...info,
@@ -73,8 +83,10 @@ const CreateTicket = async (info: ticketParams) => {
         status: "open",
         takenBy: "",
         record_num: "",
+        version: 1
     };
-    await addDoc(collection(db, "ticket"), ticket);
+    const res = await addDoc(collection(db, "ticket"), ticket);
+    addDoc(collection(db, "ticket", res.id, "history"), ticket);
 };
 
-export { QueryOpenTickets, QueryUserTickets, QueryInProgressTicket, CreateTicket };
+export { QueryOpenTickets, QueryUserTickets, QueryInProgressTicket, QueryTicketHistory , CreateTicket };
