@@ -62,6 +62,7 @@ const Register = () => {
                     console.log(err);
                 });
         }
+        setLoading(false);
     }
 
     useEffect(() => {
@@ -137,11 +138,10 @@ const Register = () => {
 
                         <Button
                             isLoading={loading}
-                            loadingText={"Logging In"}
+                            loadingText={"Registering"}
                             type="submit"
                             w="100%"
                             colorScheme="blue"
-                            variant="outline"
                             my={2}
                         >
                             {" "}
