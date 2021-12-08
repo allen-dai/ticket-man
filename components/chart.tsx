@@ -25,10 +25,7 @@ const LineChart = ({type}:any) => {
         ],
         datasets: [
             {
-                data: [
-                    1, 2, 3, 4, 5, 6, 7, 7, 4, 3, 8, 9, 15, 10, 25, 20, 13, 15,
-                    17, 19, 21,
-                ],
+                data: Array.from({length: 20}, () => Math.floor(Math.random() * 100)),
                 fill: false,
                 borderColor: "#508080",
             },
