@@ -108,6 +108,7 @@ const Edit = () => {
                             isRequired
                             resize="none"
                             defaultValue={ticket?.description}
+                            borderColor="gray.400"
                             onChange={(e) => { setDescription(e.currentTarget.value) }}
                         />
                     </FormControl>
