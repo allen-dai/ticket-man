@@ -35,7 +35,7 @@ const Main = ({ children, router }: props) => {
                     toggle={toggleSidebar}
                     variant={
                         variant?.sidebar === undefined
-                            ? ("sidebar" as const)
+                            ? ("drawer" as const)
                             : variant?.sidebar
                     }
                 />
