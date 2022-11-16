@@ -60,7 +60,7 @@ const SideBar = ({ path, variant, isOpen, toggle }: SidebarProps) => {
         <>
             <Drawer isOpen={isOpen} placement="left" onClose={toggle}>
                 <DrawerOverlay />
-                <DrawerContent>
+                <DrawerContent bg={bg}>
                     <DrawerCloseButton />
                     <DrawerHeader>Page</DrawerHeader>
                     <Divider mb={5} />
