@@ -26,7 +26,7 @@ const Main = ({ children, router }: props) => {
                     name="viewport"
                     content="width=device-width, initial-scale=1"
                 />
-                <title>Eraplan</title>
+                <title>Ticket Manager</title>
             </Head>
             <Flex>
                 <SideBar

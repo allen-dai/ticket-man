@@ -20,7 +20,7 @@ const Logo = () => {
             <a>
                 <LogoBox>
                     <Image src={logoImg} width={20} height={20} alt="logo"/>
-                    <Text mx={2}>Eraplan</Text>
+                    <Text mx={2}>Ticket Manager</Text>
                 </LogoBox>
             </a>
         </Link>
