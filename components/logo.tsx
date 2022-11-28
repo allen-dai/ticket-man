@@ -19,7 +19,7 @@ const Logo = () => {
         <Link href="/">
             <a>
                 <LogoBox>
-                    <Image src={logoImg} width={20} height={20} />
+                    <Image src={logoImg} width={20} height={20} alt="logo"/>
                     <Text mx={2}>Eraplan</Text>
                 </LogoBox>
             </a>
