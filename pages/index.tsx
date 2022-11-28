@@ -59,7 +59,6 @@ const Dashboard: NextPage = () => {
     return (
         <Box width="100%" p="3em" mt={5}>
             <SimpleGrid
-                name="charts area"
                 columns={{ sm: 1, md: 2, lg: 3 }}
                 spacing={5}
                 p={2}
