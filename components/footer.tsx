@@ -19,6 +19,7 @@ const ProfileFooter = ({ toggle }: any) => {
                 <Button
                     colorScheme="facebook"
                     mb={2}
+                    w="100%"
                 >
                     Profile
                 </Button>

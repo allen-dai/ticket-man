@@ -1,5 +1,5 @@
 import NextLink from "next/link";
-import { Link, useColorModeValue } from "@chakra-ui/react";
+import { Link, useColorModeValue, Box } from "@chakra-ui/react";
 import { useUserContext } from ".././lib/firebaseHook";
 
 type LinkItemProps = {
@@ -15,15 +15,18 @@ const LinkItem = ({ href, path, onClick, children }: LinkItemProps) => {
     const inactiveColor = useColorModeValue("gray.800", "whiteAlpha.900");
     return (
         <NextLink href={href}>
-            <Link
-                p={2}
-                bg={active ? inactiveColor : undefined}
-                color={active ? activeColor : inactiveColor}
+            <Box
                 borderRadius="lg"
-                onClick={onClick}
+                bg={active ? inactiveColor : undefined}
+                p="6px"
             >
-                {children}
-            </Link>
+                <Link
+                    color={active ? activeColor : inactiveColor}
+                    onClick={onClick}
+                >
+                    {children}
+                </Link>
+            </Box>
         </NextLink>
     );
 };

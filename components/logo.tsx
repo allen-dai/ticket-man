@@ -17,12 +17,10 @@ const Logo = () => {
     const logoImg = `/images/logo-${useColorModeValue("dark", "light")}.png`;
     return (
         <Link href="/">
-            <a>
-                <LogoBox>
-                    <Image src={logoImg} width={20} height={20} alt="logo"/>
-                    <Text mx={2}>Ticket Manager</Text>
-                </LogoBox>
-            </a>
+            <LogoBox>
+                <Image src={logoImg} width={20} height={20} alt="logo"/>
+                <Text mx={2}>Ticket Manager</Text>
+            </LogoBox>
         </Link>
     );
 };
